@@ -4,17 +4,17 @@ A modern web application for stock market analysis and trading signals.
 
 ## Tech Stack
 
-- **Framework**: Next.js 15.6 with App Router
+- **Framework**: Next.js 15.6 with Turbopack
 - **Language**: TypeScript
-- **Authentication**: NextAuth.js
-- **Database**: PostgreSQL with Prisma ORM
-- **State Management**: React Context
+- **Authentication**: Better Auth
+- **Database**: MongoDB with Mongoose
 - **Background Jobs**: Inngest
 - **AI Integration**: Google Gemini
+- **Form Management**: React Hook Form
 - **Styling**: 
   - Tailwind CSS
-  - Shadcn/ui
-  - CSS Modules
+  - shadcn/ui
+  - Class Variance Authority
 
 ## Project Structure
 
@@ -22,25 +22,29 @@ A modern web application for stock market analysis and trading signals.
 stocks-app/
 ├── app/                    # Next.js 15 app directory
 │   ├── (auth)/            # Authentication routes
-│   ├── (dashboard)/       # Protected dashboard routes
+│   │   ├── sign-in/       # Sign in page
+│   │   └── sign-up/       # Sign up page
+│   ├── (root)/            # Root routes
+│   │   └── stocks/        # Stock-related pages
 │   ├── api/               # API routes
+│   │   └── inngest/       # Inngest webhooks
+│   ├── globals.css        # Global styles
 │   └── layout.tsx         # Root layout
 ├── components/            
 │   ├── forms/             # Form components
-│   ├── layouts/           # Layout components
-│   └── ui/                # UI components
+│   └── ui/                # Shadcn UI components
+├── database/              # MongoDB configuration
+│   ├── mongoose.ts        # Mongoose connection
+│   └── models/            # MongoDB models
+├── hooks/                 # Custom React hooks
 ├── lib/                   
 │   ├── actions/           # Server actions
-│   ├── auth/              # Auth configuration
-│   ├── inngest/           # Inngest setup
-│   ├── prisma/            # Database client
-│   └── utils/             # Utility functions
-├── prisma/
-│   └── schema.prisma      # Database schema
-├── public/                # Static assets
-├── styles/                # Global styles
-├── types/                 # TypeScript types
-└── middleware.ts          # Next.js middleware
+│   ├── better-auth/       # Auth configuration
+│   ├── inngest/          # Inngest setup
+│   └── utils/            # Utility functions
+├── middleware/           # Next.js middleware
+├── public/               # Static assets
+└── types/               # TypeScript type definitions
 
 ```
 
@@ -50,11 +54,10 @@ Create a `.env` file with:
 
 ```env
 # Database
-DATABASE_URL="postgresql://..."
+MONGODB_URI="your-mongodb-uri"
 
-# Authentication
-NEXTAUTH_SECRET="your-secret"
-NEXTAUTH_URL="http://localhost:3000"
+# Better Auth
+AUTH_SECRET="your-auth-secret"
 
 # Inngest
 INNGEST_EVENT_KEY="your-event-key"
@@ -62,6 +65,12 @@ INNGEST_BASE_URL="https://api.inngest.com"
 
 # AI
 GEMINI_API_KEY="your-gemini-key"
+
+# Email
+SMTP_USER="your-smtp-username"
+SMTP_PASSWORD="your-smtp-password"
+SMTP_HOST="your-smtp-host"
+SMTP_PORT="587"
 ```
 
 ## Development
@@ -70,13 +79,7 @@ GEMINI_API_KEY="your-gemini-key"
 # Install dependencies
 npm install
 
-# Generate Prisma client
-npx prisma generate
-
-# Run database migrations
-npx prisma migrate dev
-
-# Start development server
+# Start development server with Turbopack
 npm run dev
 ```
 
@@ -84,29 +87,56 @@ npm run dev
 
 ```json
 {
-  "dev": "next dev",
-  "build": "next build",
+  "dev": "next dev --turbopack",
+  "build": "next build --turbopack",
   "start": "next start",
-  "lint": "next lint",
-  "test": "jest",
-  "prisma:studio": "prisma studio"
+  "lint": "eslint"
 }
 ```
 
 ## Features
 
-- 🔐 Authentication with NextAuth.js
-- 📊 Real-time stock data visualization
-- 🤖 AI-powered market analysis
-- 📈 Trading signals generation
+- 🔐 Authentication with Better Auth
+- 📊 Real-time stock data visualization with TradingView
+- 🤖 AI-powered market analysis with Gemini
+- 📈 Trading signals and watchlists
 - 🔄 Background jobs with Inngest
-- 📱 Responsive design
-- 🎨 Theme customization
+- � Email notifications with Nodemailer
+- �📱 Responsive design with shadcn/ui
+- 🎨 Modern UI with Tailwind CSS and shadcn/ui
+- 🌍 Country selection support
 
 ## Architecture
 
 - **App Router**: Leverages Next.js 15 server components
 - **Server Actions**: For form handling and data mutations
-- **API Routes**: RESTful endpoints for external integrations
+- **API Routes**: RESTful endpoints and Inngest webhooks
 - **Middleware**: Auth protection and request handling
-- **Database**: Prisma schema with PostgreSQL
+- **Database**: MongoDB with Mongoose models
+- **Components**: shadcn/ui (built on Radix UI primitives)
+
+## Dependencies
+
+### Core
+- next: ^15.5.4
+- react: ^19.1.0
+- mongodb: ^6.20.0
+- mongoose: ^8.19.1
+- better-auth: ^1.3.27
+- inngest: ^3.44.3
+- nodemailer: ^7.0.9
+
+### UI & Forms
+- shadcn/ui components with Radix UI primitives
+- react-hook-form: ^7.64.0
+- class-variance-authority: ^0.7.1
+- lucide-react: ^0.545.0
+- sonner: ^2.0.7
+- tailwind-merge: ^3.3.1
+- cmdk: ^1.1.1
+
+### Development
+- typescript: ^5
+- tailwindcss: ^4
+- eslint: ^9
+- @types/* packages
